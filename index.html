@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual scroller in Vanilla JS</title>
+</head>
+
+<style>
+    #app {
+        display: flex;
+        flex-direction: column;
+        height: 100px;
+        width: 50%;
+        border: 2px solid salmon;
+        overflow: scroll;
+    }
+</style>
+<body>
+    <div id="app"></div>
+
+    <script>
+        const App = function _App() {
+            return `
+            <h1>Hello world!</h1>
+            <br>
+            <h3>${_App.state.count}</h3>
+            <button id="button">Increment</button>
+            `;
+        }
+        App.state = {
+            count: 0,
+            increment: () => {
+                setState(() => App.state.count++);
+            } 
+        }
+
+        const setState = (callback) => {
+            callback(),
+            renderTree();
+        }
+
+        const renderTree = () => {
+            document.getElementById("app").innerHTML = App();
+            document.getElementById("button").addEventListener("click", App.state.increment)
+        };
+
+        renderTree();
+    </script>
+    
+</body>
+</html>
