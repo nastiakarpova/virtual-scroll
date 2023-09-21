@@ -36,7 +36,8 @@
         "Item 4", "Item 5", "Item 6", "Item 7", "Item 8", "Item 9"];
     
         const totalItemsCount = R.length(items);
-        const shownItemsCount = 3;        
+        const buffer = 1;
+        const shownItemsCount = 3 + (2 * buffer);        
 
         const listElement = document.getElementById("list-container");
         listElement.addEventListener("scroll", scrollEventHandler);
