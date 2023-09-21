@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,50 +7,51 @@
 </head>
 
 <style>
-    #wrapper {
+    #viewport {
         display: flex;
-        height: 100px;
-        width: 50%;
-        /* overflow: scroll; */
+        height: 60px;
+        width: 30%;
+        overflow: hidden;
         justify-content: space-between;
+        border: 1px solid pink;
     }
 
-    #list-items {
-        /* border: 2px solid salmon; */
-        /* overflow: hidden; */
+    #list-container {
+        overflow: scroll;
+        width: 100%;
     }
 </style>
 <body>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ramda/0.29.0/ramda.min.js"></script>
 
-    <div id="wrapper">
-        <div id="list-items"></div>
-        <div>
-            <button onclick="increment()">Increment</button>
-            <button onclick="decrement()">Decrement</button>
-        </div>
+    <div id="viewport">
+        <div id="list-container"></div>
     </div>
     
 
     <script>
-        const totalItemsCount = 10;
-        const shownItemsCount = 3;
         let count = 0;
-
+        
         const items = ["Item 0", "Item 1", "Item 2", "Item 3", 
-        "Item 4", "Item 5", "Item 6", "Item 7", "Item 8", "Item 9"]
+        "Item 4", "Item 5", "Item 6", "Item 7", "Item 8", "Item 9"];
+    
+        const totalItemsCount = R.length(items);
+        const shownItemsCount = 3;        
 
-        const rowHeight = 20;
-        const totalListHeight = rowHeight * R.length(items)
+        const listElement = document.getElementById("list-container");
+        listElement.addEventListener("scroll", scrollEventHandler);
 
-        function increment() {
-            (count <= 10) ? count++ : count;
-            count = R.min(R.length(items) - shownItemsCount, count);
-            renderList();
+        function scrollEventHandler(event) {
+            const scrollTop = listElement.scrollTop;
+            moveItems(scrollTop);
         }
 
-        function decrement() {
-            (count >= 0) ? count-- : count;
+        const rowHeight = 20;
+        const totalListHeight = rowHeight * totalItemsCount;
+
+        function moveItems(scrollTop) {
+            count = Math.floor(scrollTop / rowHeight);
+            count = R.min(totalItemsCount - shownItemsCount, count);
             count = R.max(0, count);
             renderList();
         }
@@ -62,12 +62,12 @@
             const visibleItems = R.pipe(
                 R.slice(count, count + shownItemsCount),
                 R.map((x) => `<div style="height: ${rowHeight}px;
-                transform: translateY(${offsetY}px">${x}</div>`)
+                transform: translateY(${offsetY}px)">${x}</div>`)
             )(items)
 
-            document.getElementById("list-items").innerHTML = `
-            <div style="height: ${totalListHeight}px; border:2px solid black">
-                ${visibleItems.join("")}
+            document.getElementById("list-container").innerHTML = `
+            <div style="height: ${totalListHeight}px;">
+            ${R.join("", visibleItems)}
             </div>`;
         }
 
